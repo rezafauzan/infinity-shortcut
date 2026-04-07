@@ -16,7 +16,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		if authHeader == "" {
 			ctx.JSON(http.StatusUnauthorized, dto.ResponseDTO{
 				Success: false,
-				Message: "Authorization header required",
+				Message: "Unauthorized access please login!",
 				Data:    nil,
 			})
 			ctx.Abort()
