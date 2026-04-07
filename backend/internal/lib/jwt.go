@@ -34,3 +34,21 @@ func GenerateToken(userId int, cartId int) (string, error) {
 
 	return tokenString, nil
 }
+
+func VerifyJWT(tokenString string) (*CustomClaims, error) {
+	claims := &CustomClaims{}
+
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (any, error) {
+		return []byte(os.Getenv("APP_SECRET")), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+
+	return claims, nil
+}
