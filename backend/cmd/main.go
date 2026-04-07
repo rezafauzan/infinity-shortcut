@@ -22,7 +22,7 @@ func main() {
 	}
 	
 	apiRouter := router.Group("/api")
-	routers.NewUserRouters(apiRouter, container)
+	routers.NewAuthRouters(apiRouter, container)
 	routers.NewLinkRouters(apiRouter, container)
 
 	router.Run(fmt.Sprintf("localhost:%s", os.Getenv("PORT")))
