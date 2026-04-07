@@ -12,6 +12,7 @@ import (
 type Container struct {
 	db          *pgxpool.Pool
 	AuthHandler *handlers.AuthHandler
+	LinkHandler *handlers.LinkHandler
 }
 
 func NewContainer() (*Container, error) {
@@ -36,6 +37,13 @@ func (c *Container) initDependencies() error {
 	}
 	userService := services.NewAuthService(userRepo)
 	c.AuthHandler = handlers.NewAuthHandler(userService)
+	
+	linkRepo, err := repository.NewLinkRepository(c.db)
+	if err != nil {
+		return err
+	}
+	linkService := services.NewLinkService(linkRepo)
+	c.LinkHandler = handlers.NewLinkHandler(linkService)
 
 	return nil
 }
