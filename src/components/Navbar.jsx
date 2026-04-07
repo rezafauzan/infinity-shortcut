@@ -14,8 +14,8 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="hidden md:flex justify-evenly items-center gap-4">
-                <button className="hover:bg-black/10 h-10 px-4 flex justify-center items-center gap-4 border border-black/10 rounded shadow cursor-pointer">Login</button>
-                <button className="bg-blue-700 hover:bg-blue-900 text-white h-10 px-4 flex justify-center items-center gap-4 border border-black/10 rounded shadow cursor-pointer">Register</button>
+                <Link to="/auth/login" className="hover:bg-black/10 h-10 px-4 flex justify-center items-center gap-4 border border-black/10 rounded shadow cursor-pointer">Login</Link>
+                <Link to="/auth/register" className="bg-blue-700 hover:bg-blue-900 text-white h-10 px-4 flex justify-center items-center gap-4 border border-black/10 rounded shadow cursor-pointer">Register</Link>
             </div>
         </nav>
     )
