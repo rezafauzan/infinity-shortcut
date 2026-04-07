@@ -50,3 +50,19 @@ func (u LinkRepository) GetAllLinksByUserId(userId int) ([]models.Links, error) 
 
 	return links, nil
 }
+
+func (u LinkRepository) DeleteLinkById(id int) (models.Links, error) {
+	sql := "UPDATE links SET deleted_at = $1 WHERE id = $2 RETURNING id, user_id, original_url, short_url, created_at, updated_at, deleted_at"
+
+	rows, err := u.db.Query(context.Background(), sql, time.Now(), id)
+	if err != nil {
+		return models.Links{}, errors.New("Failed to delete link! : " + err.Error())
+	}
+
+	deletedLink, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[models.Links])
+	if err != nil {
+		return models.Links{}, errors.New("Link deleted but returning error! : " + err.Error())
+	}
+
+	return deletedLink, nil
+}
