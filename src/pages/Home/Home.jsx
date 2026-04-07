@@ -4,6 +4,7 @@ import { Link, Outlet } from "react-router-dom";
 import Navbar from "/src/components/Navbar";
 import { useForm } from "react-hook-form";
 import stockPhoto from "/assets/img/value-propotition-stock-photo.png"
+import Footer from "../../components/Footer";
 
 const Hero = () => {
     const { register, handleSubmit } = useForm()
@@ -130,6 +131,7 @@ const HomeLayout = () => {
                 <Hero />
                 <Features />
                 <ValuePropotition />
+                <Footer />
             </div>
         </>
     )
