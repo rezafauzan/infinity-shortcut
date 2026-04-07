@@ -3,6 +3,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import logo from "/assets/img/drawable/logo.svg"
 
 const Register = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -13,7 +14,7 @@ const Register = () => {
     }
     return (
         <>
-            <img src="/assets/img/drawable/logo.svg" alt="Infinity Shortcut" />
+            <img src={logo} alt="Infinity Shortcut" />
             <span className="text-xl font-bold">Create Account</span>
             <span>Join the elite architects of the web.</span>
 
