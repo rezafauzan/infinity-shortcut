@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 
-const Nvabar = () => {
+const Navbar = () => {
     return (
         <nav className="h-16 px-4 border-b border-b-black/10 flex justify-between items-center gap-4 shadow">
             <div className="flex items-center gap-4">
@@ -8,9 +8,9 @@ const Nvabar = () => {
                     <Link to="/" className="font-bold">Infinity Shortcut</Link>
                 </div>
                 <ul className="hidden md:flex justify-evenly items-center gap-4">
-                    <li><Link to="/">Dashboard</Link></li>
-                    <li><Link to="/">Analytics</Link></li>
-                    <li><Link to="/">Links</Link></li>
+                    <li><Link to="/" className="text-gray-700 hover:text-gray-900">Dashboard</Link></li>
+                    <li><Link to="/" className="text-gray-700 hover:text-gray-900">Analytics</Link></li>
+                    <li><Link to="/" className="text-gray-700 hover:text-gray-900">Links</Link></li>
                 </ul>
             </div>
             <div className="hidden md:flex justify-evenly items-center gap-4">
@@ -20,4 +20,4 @@ const Nvabar = () => {
         </nav>
     )
 }
-export default Nvabar
+export default Navbar
