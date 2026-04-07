@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"snowfoxinfinity/infinity-shortcut/internal/dto"
+	"snowfoxinfinity/infinity-shortcut/internal/lib"
 	"snowfoxinfinity/infinity-shortcut/internal/models"
 	"snowfoxinfinity/infinity-shortcut/internal/repository"
 	"strings"
@@ -61,4 +62,29 @@ func (u AuthService) Register(newUser dto.RegisterDTO) (dto.RegisterResponseDTO,
 	}
 
 	return response, nil
+}
+
+func (a AuthService) Login(req dto.LoginRequestDTO) (dto.LoginResponseDTO, error) {
+	if !strings.Contains(req.Email, "@") {
+		return dto.LoginResponseDTO{}, errors.New("Failed to login! Invalid email format !")
+	}
+
+	user, err := a.userRepo.GetUserByEmail(req.Email)
+	if err != nil {
+		return dto.LoginResponseDTO{}, errors.New("Failed to login! Invalid email or password !")
+	}
+
+	if req.Password != user.PasswordHash {
+		return dto.LoginResponseDTO{}, errors.New("Failed to login! Invalid email or password !")
+	}
+
+	token, err := lib.GenerateToken(user.Id)
+
+	if err != nil {
+		return dto.LoginResponseDTO{}, errors.New("Failed to generate token : " + err.Error())
+	}
+
+	return dto.LoginResponseDTO{
+		Token: token,
+	}, nil
 }
