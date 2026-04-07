@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS links (
     id SERIAL PRIMARY KEY,
-    user_id VARCHAR(255) NOT NULL,
+    user_id int NOT NULL,
     original_url VARCHAR(255) NOT NULL,
     short_url VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
