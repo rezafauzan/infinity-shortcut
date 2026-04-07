@@ -13,7 +13,7 @@ const Hero = () => {
     }
     return (
         <section>
-            <div className="flex flex-col justify-center items-center gap-4 p-4">
+            <div className="flex flex-col justify-center items-center gap-4 p-4 h-128 md:h-screen md:max-h-192">
                 <h2 className="font-bold text-4xl">
                     <span>Shorten URLs.</span> <span className="text-blue-700">Share Easily.</span>
                 </h2>
