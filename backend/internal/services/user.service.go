@@ -20,31 +20,31 @@ func NewUserService(userRepo *repository.UserRepository) *UserService {
 
 func (u UserService) CreateNewUser(newUser dto.CreateUserDTO) (dto.CreateUserResponseDTO, error) {
 	if len(newUser.FirstName) < 4 {
-		return dto.CreateUserResponseDTO{}, errors.New("Failed to create user! : First name length minimum is 4 characters !")
+		return dto.CreateUserResponseDTO{}, errors.New("First name length minimum is 4 characters !")
 	}
 	if len(newUser.LastName) < 4 {
-		return dto.CreateUserResponseDTO{}, errors.New("Failed to create user! : Last name length minimum is 4 characters !")
+		return dto.CreateUserResponseDTO{}, errors.New("Last name length minimum is 4 characters !")
 	}
 	if !strings.Contains(newUser.Email, "@") {
-		return dto.CreateUserResponseDTO{}, errors.New("Failed to create user! : Invalid email format !")
+		return dto.CreateUserResponseDTO{}, errors.New("Invalid email format !")
 	}
 	if len(newUser.Password) < 8 {
-		return dto.CreateUserResponseDTO{}, errors.New("Failed to create user! : Password too weak minimum length is 8 characters !")
+		return dto.CreateUserResponseDTO{}, errors.New("Password too weak minimum length is 8 characters !")
 	}
 	if newUser.PasswordConfirm != newUser.Password {
-		return dto.CreateUserResponseDTO{}, errors.New("Failed to create user! : Password confirmation missmatch !")
+		return dto.CreateUserResponseDTO{}, errors.New("Password confirmation missmatch !")
 	}
 	
 	modeledNewUser := models.User{
 		FirstName: newUser.FirstName,
 		LastName:  newUser.LastName,
 		Email:     newUser.Email,
-		Password:  newUser.Password,
+		PasswordHash:  newUser.Password,
 	}
 	
 	registeredUser, err := u.userRepo.CreateNewUser(modeledNewUser)
 	if err != nil {
-		return dto.CreateUserResponseDTO{}, errors.New("Failed to create new user! : Email allready used !")
+		return dto.CreateUserResponseDTO{}, err
 	}
 	
 	response := dto.CreateUserResponseDTO{
