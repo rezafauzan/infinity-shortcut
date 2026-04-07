@@ -5,7 +5,7 @@ import (
 	"slices"
 )
 
-func shuffle() string {
+func Shuffle() string {
 	keys := "abdefghijklmnopqrstuvwxyz012456789"
 	var usedKeysIndex []int
 	scrambledKeys := ""
