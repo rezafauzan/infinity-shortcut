@@ -9,12 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserHandler struct {
-	userService *services.UserService
+type AuthHandler struct {
+	userService *services.AuthService
 }
 
-func NewUserHandler(userService *services.UserService) *UserHandler {
-	return &UserHandler{
+func NewAuthHandler(userService *services.AuthService) *AuthHandler {
+	return &AuthHandler{
 		userService: userService,
 	}
 }
@@ -25,14 +25,14 @@ func NewUserHandler(userService *services.UserService) *UserHandler {
 // @Tags         users
 // @Accept json
 // @Produce json
-// @Param body body dto.CreateUserDTO true "Registration payload"
-// @Success 201 {object} dto.Response{data=dto.CreateUserResponseDTO}
+// @Param body body dto.RegisterDTO true "Registration payload"
+// @Success 201 {object} dto.Response{data=dto.RegisterResponseDTO}
 // @Failure      400 {object} dto.Response
 // @Failure      409 {object} dto.Response
 // @Failure      500 {object} dto.Response
 // @Router       /auth/register [post]
-func (u UserHandler) CreateNewUser(ctx *gin.Context) {
-	var newUserData dto.CreateUserDTO
+func (u AuthHandler) Register(ctx *gin.Context) {
+	var newUserData dto.RegisterDTO
 	err := ctx.ShouldBind(&newUserData)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ResponseDTO{
@@ -42,7 +42,7 @@ func (u UserHandler) CreateNewUser(ctx *gin.Context) {
 		})
 		return
 	}
-	registeredUser, err := u.userService.CreateNewUser(newUserData)
+	registeredUser, err := u.userService.Register(newUserData)
 	if err != nil {
 		if strings.Contains(err.Error(), "allready used") {
 			ctx.JSON(http.StatusConflict, dto.ResponseDTO{
@@ -65,4 +65,8 @@ func (u UserHandler) CreateNewUser(ctx *gin.Context) {
 		Message: "Register success!",
 		Data:    registeredUser,
 	})
+}
+
+func (u AuthHandler) Login(ctx *gin.Context){
+	
 }

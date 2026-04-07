@@ -8,31 +8,31 @@ import (
 	"strings"
 )
 
-type UserService struct {
+type AuthService struct {
 	userRepo *repository.UserRepository
 }
 
-func NewUserService(userRepo *repository.UserRepository) *UserService {
-	return &UserService{
+func NewAuthService(userRepo *repository.UserRepository) *AuthService {
+	return &AuthService{
 		userRepo: userRepo,
 	}
 }
 
-func (u UserService) CreateNewUser(newUser dto.CreateUserDTO) (dto.CreateUserResponseDTO, error) {
+func (u AuthService) Register(newUser dto.RegisterDTO) (dto.RegisterResponseDTO, error) {
 	if len(newUser.FirstName) < 4 {
-		return dto.CreateUserResponseDTO{}, errors.New("First name length minimum is 4 characters !")
+		return dto.RegisterResponseDTO{}, errors.New("First name length minimum is 4 characters !")
 	}
 	if len(newUser.LastName) < 4 {
-		return dto.CreateUserResponseDTO{}, errors.New("Last name length minimum is 4 characters !")
+		return dto.RegisterResponseDTO{}, errors.New("Last name length minimum is 4 characters !")
 	}
 	if !strings.Contains(newUser.Email, "@") {
-		return dto.CreateUserResponseDTO{}, errors.New("Invalid email format !")
+		return dto.RegisterResponseDTO{}, errors.New("Invalid email format !")
 	}
 	if len(newUser.Password) < 8 {
-		return dto.CreateUserResponseDTO{}, errors.New("Password too weak minimum length is 8 characters !")
+		return dto.RegisterResponseDTO{}, errors.New("Password too weak minimum length is 8 characters !")
 	}
 	if newUser.PasswordConfirm != newUser.Password {
-		return dto.CreateUserResponseDTO{}, errors.New("Password confirmation missmatch !")
+		return dto.RegisterResponseDTO{}, errors.New("Password confirmation missmatch !")
 	}
 
 	modeledNewUser := models.User{
@@ -44,15 +44,15 @@ func (u UserService) CreateNewUser(newUser dto.CreateUserDTO) (dto.CreateUserRes
 
 	_, err := u.userRepo.GetUserByEmail(modeledNewUser.Email)
 	if err == nil {
-		return dto.CreateUserResponseDTO{}, errors.New("Email allready used!")
+		return dto.RegisterResponseDTO{}, errors.New("Email allready used!")
 	}
 
 	registeredUser, err := u.userRepo.CreateNewUser(modeledNewUser)
 	if err != nil {
-		return dto.CreateUserResponseDTO{}, err
+		return dto.RegisterResponseDTO{}, err
 	}
 
-	response := dto.CreateUserResponseDTO{
+	response := dto.RegisterResponseDTO{
 		FirstName: registeredUser.FirstName,
 		LastName:  registeredUser.LastName,
 		Email:     registeredUser.Email,

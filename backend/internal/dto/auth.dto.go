@@ -2,7 +2,7 @@ package dto
 
 import "time"
 
-type CreateUserDTO struct {
+type RegisterDTO struct {
 	FirstName       string `json:"first_name" binding:"required"`
 	LastName        string `json:"last_name" binding:"required"`
 	Email           string `json:"email" binding:"required"`
@@ -10,7 +10,7 @@ type CreateUserDTO struct {
 	PasswordConfirm string `json:"password_confirm" binding:"required"`
 }
 
-type CreateUserResponseDTO struct {
+type RegisterResponseDTO struct {
 	Id        int       `json:"id"`
 	FirstName string    `json:"first_name"`
 	LastName  string    `json:"last_name"`
