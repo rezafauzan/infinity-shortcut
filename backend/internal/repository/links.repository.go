@@ -36,7 +36,7 @@ func (u LinkRepository) CreateNewLink(newLink models.Links) (models.Links, error
 }
 
 func (u LinkRepository) GetLinkById(linkId int) (models.Links, error) {
-	sql := "SELECT id, user_id, original_url, short_url, created_at, updated_at, deleted_at FROM links WHERE id = $1"
+	sql := "SELECT id, user_id, original_url, short_url, created_at, updated_at, deleted_at FROM links WHERE id = $1 AND deleted_at IS NULL"
 
 	rows, err := u.db.Query(context.Background(), sql, linkId)
 	if err != nil {
@@ -52,7 +52,7 @@ func (u LinkRepository) GetLinkById(linkId int) (models.Links, error) {
 }
 
 func (u LinkRepository) GetAllLinksByUserId(userId int) ([]models.Links, error) {
-	sql := "SELECT id, user_id, original_url, short_url, created_at, updated_at, deleted_at FROM links WHERE user_id = $1"
+	sql := "SELECT id, user_id, original_url, short_url, created_at, updated_at, deleted_at FROM links WHERE user_id = $1 AND deleted_at IS NULL"
 
 	rows, err := u.db.Query(context.Background(), sql, userId)
 	if err != nil {
@@ -61,6 +61,10 @@ func (u LinkRepository) GetAllLinksByUserId(userId int) ([]models.Links, error) 
 
 	links, err := pgx.CollectRows(rows, pgx.RowToStructByName[models.Links])
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return []models.Links{}, errors.New("Link not found or already deleted")
+		}
+
 		return []models.Links{}, errors.New("Links fetched but returning error! : " + err.Error())
 	}
 
