@@ -4,7 +4,8 @@ import "time"
 
 type User struct {
 	Id        int       `json:"id" db:"id"`
-	Name      string    `json:"name" db:"name"`
+	FirstName string    `json:"first_name" db:"first_name"`
+	LastName  string    `json:"last_name" db:"last_name"`
 	Email     string    `json:"email" db:"email"`
 	Password  string    `json:"-" db:"password"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
