@@ -7,5 +7,6 @@ import (
 )
 
 func NewUserRouters(apiRouter *gin.RouterGroup, container *di.Container) {
-	apiRouter.POST("register", container.UserHandler.CreateNewUser)
+	apiRouter.POST("register", container.AuthHandler.Register)
+	apiRouter.POST("login", container.AuthHandler.Login)
 }
