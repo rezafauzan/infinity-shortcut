@@ -70,15 +70,15 @@ func (l LinkHandler) CreateNewLink(ctx *gin.Context) {
 	})
 }
 
-// GetAllLinksByUserId godoc
-// @Summary      Get all links by user
-// @Description  Get all links by user id from logged in user
+// GetLinkById godoc
+// @Summary      Get link by id
+// @Description  Get link by id
 // @Tags         links
 // @Produce      json
 // @Success      200 {object} dto.ResponseDTO{data=[]dto.GetAllLinksResponseDTO}
 // @Failure      401 {object} dto.ResponseDTO
 // @Failure      500 {object} dto.ResponseDTO
-// @Router       /api/links [get]
+// @Router       /api/links/{id} [get]
 func (l LinkHandler) GetLinkById(ctx *gin.Context) {
 	linkIdParam := ctx.Param("link_id")
 
@@ -93,6 +93,34 @@ func (l LinkHandler) GetLinkById(ctx *gin.Context) {
 	}
 
 	links, err := l.linkService.GetLinkById(linkId)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, dto.ResponseDTO{
+			Success: false,
+			Message: "Internal server error!",
+			Data:    nil,
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto.ResponseDTO{
+		Success: true,
+		Message: "Get all links success!",
+		Data:    links,
+	})
+}
+
+// GetLinkBySlug godoc
+// @Summary      Get link by slug
+// @Description  Get link by slug
+// @Tags         links
+// @Produce      json
+// @Success      200 {object} dto.ResponseDTO{data=[]dto.GetAllLinksResponseDTO}
+// @Failure      401 {object} dto.ResponseDTO
+// @Failure      500 {object} dto.ResponseDTO
+// @Router       /api/links/{slug} [get]
+func (l LinkHandler) GetLinkBySlug(ctx *gin.Context) {
+	slugParam := ctx.Param("slug")
+	links, err := l.linkService.GetLinkBySlug(slugParam)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, dto.ResponseDTO{
 			Success: false,

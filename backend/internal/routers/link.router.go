@@ -9,6 +9,7 @@ import (
 
 func NewLinkRouters(apiRouter *gin.RouterGroup, container *di.Container) {
 	apiRouter.GET("links", middleware.AuthMiddleware(), container.LinkHandler.GetAllLinksByUserId)
+	apiRouter.GET("links/:slug", container.LinkHandler.GetLinkBySlug)
 	apiRouter.POST("links", middleware.AuthMiddleware(), container.LinkHandler.CreateNewLink)
 	apiRouter.DELETE("links/:link_id", middleware.AuthMiddleware(), container.LinkHandler.DeleteLinkById)
 }
