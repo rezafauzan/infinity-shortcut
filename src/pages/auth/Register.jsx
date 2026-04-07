@@ -1,4 +1,3 @@
-import { AiOutlineGoogle } from "react-icons/ai";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { Link } from "react-router-dom";
@@ -25,24 +24,24 @@ const Register = () => {
                 </div>
                 <form onSubmit={handleSubmit(signup)}>
                     <div className="flex flex-col justify-center gap-4">
-                        <label for="email">Email Address</label>
+                        <label htmlFor="email">Email Address</label>
                         <label className="flex items-center gap-4 p-4 border rounded border-black/40">
                             <input type="email" {...register("email")} id="email" placeholder="name@snowfoxinfinity.com" className="flex-1" />
                         </label>
                         <div className="flex justify-between items-center gap-4">
-                            <label for="password">Password</label>
+                            <label htmlFor="password">Password</label>
                         </div>
                         <label className="flex items-center gap-4 p-4 border rounded border-black/40">
-                            <input type={isPasswordVisible ? "text" : "password"} {...register("password")} id="password" placeholder={isPasswordVisible ? "password" : "*******"} className="flex-1" />
+                            <input type={isPasswordVisible ? "text" : "password"} {...register("password")} id="password" placeholder={isPasswordVisible ? "password" : "*******"} className="flex-1" autoComplete="off"/>
                             <button type="button" className="cursor-pointer" onClick={() => { setIsPasswordVisible(!isPasswordVisible) }}>{isPasswordVisible ? <RiEyeLine /> : <RiEyeCloseLine />}</button>
                         </label>
                         <span className="-mt-4 text-gray-700">Minimum 8 characters</span>
 
                         <div className="flex justify-between items-center gap-4">
-                            <label for="confirm-password">Confirm Password</label>
+                            <label htmlFor="confirm-password">Confirm Password</label>
                         </div>
                         <label className="flex items-center gap-4 p-4 border rounded border-black/40">
-                            <input type={isConfirmPasswordVisible ? "text" : "password"} {...register("confirm_password")} id="confirm-password" placeholder={isConfirmPasswordVisible ? "confirm password" : "*******"} className="flex-1" />
+                            <input type={isConfirmPasswordVisible ? "text" : "password"} {...register("confirm_password")} id="confirm-password" placeholder={isConfirmPasswordVisible ? "confirm password" : "*******"} className="flex-1" autoComplete="off"/>
                             <button type="button" className="cursor-pointer" onClick={() => { setIsConfirmPasswordVisible(!isConfirmPasswordVisible) }}>{isConfirmPasswordVisible ? <RiEyeLine /> : <RiEyeCloseLine />}</button>
                         </label>
                         <button className="bg-blue-700 hover:bg-blue-800 text-white py-2 flex justify-center items-center gap-4 rounded cursor-pointer">Sign Up <AiOutlineArrowRight /></button>

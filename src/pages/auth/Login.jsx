@@ -22,16 +22,16 @@ const Login = () => {
                 </div>
                 <form onSubmit={handleSubmit(login)}>
                     <div className="flex flex-col justify-center gap-4">
-                        <label for="email">Email Address</label>
+                        <label htmlFor="email">Email Address</label>
                         <label className="flex items-center gap-4 p-4 border rounded border-black/40">
                             <input type="email" {...register("email")} id="email" placeholder="name@snowfoxinfinity.com" className="flex-1" />
                         </label>
                         <div className="flex justify-between items-center gap-4">
-                            <label for="password">Password</label>
+                            <label htmlFor="password">Password</label>
                             <Link to="#" className="text-blue-700 hover:text-blue-900">Forgot password?</Link>
                         </div>
                         <label className="flex items-center gap-4 p-4 border rounded border-black/40">
-                            <input type={isPasswordVisible ? "text" : "password"} {...register("password")} id="password" placeholder={isPasswordVisible ? "password" : "*******"} className="flex-1" />
+                            <input type={isPasswordVisible ? "text" : "password"} {...register("password")} id="password" placeholder={isPasswordVisible ? "password" : "*******"} className="flex-1" autoComplete="off" />
                             <button type="button" className="cursor-pointer" onClick={() => { setIsPasswordVisible(!isPasswordVisible) }}>{isPasswordVisible ? <RiEyeLine /> : <RiEyeCloseLine />}</button>
                         </label>
                         <button className="bg-blue-700 hover:bg-blue-800 text-white py-2 flex justify-center items-center gap-4 rounded cursor-pointer">Log In <AiOutlineArrowRight /></button>
