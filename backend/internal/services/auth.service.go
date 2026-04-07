@@ -7,6 +7,8 @@ import (
 	"snowfoxinfinity/infinity-shortcut/internal/models"
 	"snowfoxinfinity/infinity-shortcut/internal/repository"
 	"strings"
+
+	"github.com/matthewhartstonge/argon2"
 )
 
 type AuthService struct {
@@ -36,14 +38,21 @@ func (u AuthService) Register(newUser dto.RegisterDTO) (dto.RegisterResponseDTO,
 		return dto.RegisterResponseDTO{}, errors.New("Password confirmation missmatch !")
 	}
 
+	argon := argon2.DefaultConfig()
+
+	hashedPassword, err := argon.HashEncoded([]byte(newUser.Password))
+	if err != nil {
+		return dto.RegisterResponseDTO{}, err
+	}
+
 	modeledNewUser := models.User{
 		FirstName:    newUser.FirstName,
 		LastName:     newUser.LastName,
 		Email:        newUser.Email,
-		PasswordHash: newUser.Password,
+		PasswordHash: string(hashedPassword),
 	}
 
-	_, err := u.userRepo.GetUserByEmail(modeledNewUser.Email)
+	_, err = u.userRepo.GetUserByEmail(modeledNewUser.Email)
 	if err == nil {
 		return dto.RegisterResponseDTO{}, errors.New("Email allready used!")
 	}
@@ -74,12 +83,16 @@ func (a AuthService) Login(req dto.LoginRequestDTO) (dto.LoginResponseDTO, error
 		return dto.LoginResponseDTO{}, errors.New("Failed to login! Invalid email or password !")
 	}
 
-	if req.Password != user.PasswordHash {
+	matched, err := argon2.VerifyEncoded([]byte(req.Password), []byte(user.PasswordHash))
+	if err != nil {
+		return dto.LoginResponseDTO{}, errors.New("Failed to login! Invalid email or password !")
+	}
+
+	if(!matched){
 		return dto.LoginResponseDTO{}, errors.New("Failed to login! Invalid email or password !")
 	}
 
 	token, err := lib.GenerateToken(user.Id)
-
 	if err != nil {
 		return dto.LoginResponseDTO{}, errors.New("Failed to generate token : " + err.Error())
 	}
