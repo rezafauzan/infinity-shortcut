@@ -22,7 +22,7 @@ func (l LinkService) CreateNewLink(newLink dto.CreateNewLinkDTO, userId int) (dt
 	if userId < 0 {
 		return dto.CreateNewLinkResponseDTO{}, errors.New("Session invalid please relogin!")
 	}
-	
+
 	slug := lib.Shuffle()
 
 	modeledNewLink := models.Links{
@@ -30,7 +30,7 @@ func (l LinkService) CreateNewLink(newLink dto.CreateNewLinkDTO, userId int) (dt
 		OriginalUrl: newLink.OriginalUrl,
 		ShortUrl:    "localhost:8888/api/links/" + slug,
 	}
-	
+
 	createdNewLink, err := l.linkRepo.CreateNewLink(modeledNewLink)
 	if err != nil {
 		return dto.CreateNewLinkResponseDTO{}, err
@@ -43,6 +43,32 @@ func (l LinkService) CreateNewLink(newLink dto.CreateNewLinkDTO, userId int) (dt
 		ShortUrl:    createdNewLink.ShortUrl,
 		CreatedAt:   createdNewLink.CreatedAt,
 		UpdatedAt:   createdNewLink.UpdatedAt,
+	}
+
+	return response, nil
+}
+
+func (l LinkService) GetAllLinksByUserId(userId int) ([]dto.GetAllLinksResponseDTO, error) {
+	if userId < 0 {
+		return []dto.GetAllLinksResponseDTO{}, errors.New("Session invalid please relogin!")
+	}
+
+	links, err := l.linkRepo.GetAllLinksByUserId(userId)
+	if err != nil {
+		return []dto.GetAllLinksResponseDTO{}, err
+	}
+
+	var response []dto.GetAllLinksResponseDTO
+
+	for _, link := range links {
+		response = append(response, dto.GetAllLinksResponseDTO{
+			Id:          link.Id,
+			UserId:      link.UserId,
+			OriginalUrl: link.OriginalUrl,
+			ShortUrl:    link.ShortUrl,
+			CreatedAt:   link.CreatedAt,
+			UpdatedAt:   link.UpdatedAt,
+		})
 	}
 
 	return response, nil
