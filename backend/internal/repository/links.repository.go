@@ -51,6 +51,26 @@ func (u LinkRepository) GetLinkById(linkId int) (models.Links, error) {
 	return link, nil
 }
 
+func (u LinkRepository) GetLinkBySlug(slug string) (models.Links, error) {
+	sql := "SELECT id, user_id, original_url, short_url, created_at, updated_at, deleted_at FROM links WHERE short_url = $1 AND deleted_at IS NULL"
+
+	rows, err := u.db.Query(context.Background(), sql, slug)
+	if err != nil {
+		return models.Links{}, errors.New("Failed to get links! : " + err.Error())
+	}
+
+	link, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[models.Links])
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return models.Links{}, errors.New("Link not found or already deleted")
+		}
+		
+		return models.Links{}, errors.New("Links fetched but returning error! : " + err.Error())
+	}
+
+	return link, nil
+}
+
 func (u LinkRepository) GetAllLinksByUserId(userId int) ([]models.Links, error) {
 	sql := "SELECT id, user_id, original_url, short_url, created_at, updated_at, deleted_at FROM links WHERE user_id = $1 AND deleted_at IS NULL"
 
