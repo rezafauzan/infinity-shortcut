@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"snowfoxinfinity/infinity-shortcut/internal/dto"
+	"snowfoxinfinity/infinity-shortcut/internal/lib"
 	"snowfoxinfinity/infinity-shortcut/internal/models"
 	"snowfoxinfinity/infinity-shortcut/internal/repository"
 )
@@ -18,16 +19,19 @@ func NewLinkService(linkRepo *repository.LinkRepository) *LinkService {
 }
 
 func (l LinkService) CreateNewLink(newLink dto.CreateNewLinkDTO) (dto.CreateNewLinkResponseDTO, error) {
-	if newLink.UserId < 0 {
+	userId := 1
+	if userId < 0 {
 		return dto.CreateNewLinkResponseDTO{}, errors.New("Session invalid please relogin!")
 	}
+	
+	slug := lib.Shuffle()
 
 	modeledNewLink := models.Links{
-		UserId:      newLink.UserId,
+		UserId:      userId,
 		OriginalUrl: newLink.OriginalUrl,
-		ShortUrl:    newLink.ShortUrl,
+		ShortUrl:    "localhost:8888/api/links/" + slug,
 	}
-
+	
 	createdNewLink, err := l.linkRepo.CreateNewLink(modeledNewLink)
 	if err != nil {
 		return dto.CreateNewLinkResponseDTO{}, err
