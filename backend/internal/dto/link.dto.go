@@ -3,9 +3,7 @@ package dto
 import "time"
 
 type CreateNewLinkDTO struct {
-	UserId      int    `json:"user_id" binding:"required"`
 	OriginalUrl string `json:"original_url" binding:"required"`
-	ShortUrl    string `json:"short_url" binding:"required"`
 }
 
 type CreateNewLinkResponseDTO struct {
