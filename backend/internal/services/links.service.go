@@ -5,7 +5,6 @@ import (
 	"snowfoxinfinity/infinity-shortcut/internal/dto"
 	"snowfoxinfinity/infinity-shortcut/internal/models"
 	"snowfoxinfinity/infinity-shortcut/internal/repository"
-	"strings"
 )
 
 type LinkService struct {
@@ -18,13 +17,9 @@ func NewLinkService(linkRepo *repository.LinkRepository) *LinkService {
 	}
 }
 
-func (u AuthService) CreateNewLink(newLink dto.CreateNewLinkDTO) (dto.CreateNewLinkResponseDTO, error) {
+func (l LinkService) CreateNewLink(newLink dto.CreateNewLinkDTO) (dto.CreateNewLinkResponseDTO, error) {
 	if newLink.UserId < 0 {
-		return dto.CreateNewLinkResponseDTO{}, errors.New("First name length minimum is 4 characters !")
-	}
-
-	if !strings.Contains(newLink.ShortUrl, "@") {
-		return dto.CreateNewLinkResponseDTO{}, errors.New("Invalid email format !")
+		return dto.CreateNewLinkResponseDTO{}, errors.New("Session invalid please relogin!")
 	}
 
 	modeledNewLink := models.Links{
@@ -33,18 +28,18 @@ func (u AuthService) CreateNewLink(newLink dto.CreateNewLinkDTO) (dto.CreateNewL
 		ShortUrl:    newLink.ShortUrl,
 	}
 
-	createNewLinkedUser, err := u.userRepo.CreateNewLink(modeledNewLink)
+	createdNewLink, err := l.linkRepo.CreateNewLink(modeledNewLink)
 	if err != nil {
 		return dto.CreateNewLinkResponseDTO{}, err
 	}
 
 	response := dto.CreateNewLinkResponseDTO{
-		Id:          createNewLinkedUser.Id,
-		UserId:      createNewLinkedUser.UserId,
-		OriginalUrl: createNewLinkedUser.OriginalUrl,
-		ShortUrl:    createNewLinkedUser.ShortUrl,
-		CreatedAt:   createNewLinkedUser.CreatedAt,
-		UpdatedAt:   createNewLinkedUser.UpdatedAt,
+		Id:          createdNewLink.Id,
+		UserId:      createdNewLink.UserId,
+		OriginalUrl: createdNewLink.OriginalUrl,
+		ShortUrl:    createdNewLink.ShortUrl,
+		CreatedAt:   createdNewLink.CreatedAt,
+		UpdatedAt:   createdNewLink.UpdatedAt,
 	}
 
 	return response, nil

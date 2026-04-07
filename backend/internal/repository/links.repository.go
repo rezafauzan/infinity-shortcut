@@ -20,8 +20,8 @@ func NewLinkRepository(db *pgxpool.Pool) (*LinkRepository, error) {
 	}, nil
 }
 
-func (u UserRepository) CreateNewLink(newLink models.Links) (models.Links, error) {
-	sql := "INSERT INTO users (user_id, original_url, short_url, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING id, user_id, original_url, short_url, created_at, updated_at"
+func (u LinkRepository) CreateNewLink(newLink models.Links) (models.Links, error) {
+	sql := "INSERT INTO links (user_id, original_url, short_url, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING id, user_id, original_url, short_url, created_at, updated_at, deleted_at"
 	rows, err := u.db.Query(context.Background(), sql, newLink.UserId, newLink.OriginalUrl, newLink.ShortUrl, time.Now(), time.Now())
 	if err != nil {
 		return models.Links{}, errors.New("Failed to create new link! : " + err.Error())
