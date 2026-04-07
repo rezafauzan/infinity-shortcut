@@ -18,3 +18,12 @@ type RegisterResponseDTO struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type LoginRequestDTO struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type LoginResponseDTO struct {
+	Token string          `json:"token"`
+}
