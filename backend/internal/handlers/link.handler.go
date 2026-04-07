@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"snowfoxinfinity/infinity-shortcut/internal/dto"
 	"snowfoxinfinity/infinity-shortcut/internal/services"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -141,5 +143,76 @@ func (l LinkHandler) GetAllLinksByUserId(ctx *gin.Context) {
 		Success: true,
 		Message: "Get all links success!",
 		Data:    links,
+	})
+}
+
+// DeleteLinkById godoc
+// @Summary      Delete link
+// @Description  Delete link by id (only owner can delete)
+// @Tags         links
+// @Produce      json
+// @Param        id   path      int  true  "Link ID"
+// @Success      200  {object}  dto.ResponseDTO{data=dto.DeleteLinkResponseDTO}
+// @Failure      400  {object}  dto.ResponseDTO
+// @Failure      401  {object}  dto.ResponseDTO
+// @Failure      403  {object}  dto.ResponseDTO
+// @Failure      404  {object}  dto.ResponseDTO
+// @Failure      500  {object}  dto.ResponseDTO
+// @Router       /api/links/{id} [delete]
+func (l LinkHandler) DeleteLinkById(ctx *gin.Context) {
+	linkIdParam := ctx.Param("link_id")
+	fmt.Println(linkIdParam)
+	linkId, err := strconv.Atoi(linkIdParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, dto.ResponseDTO{
+			Success: false,
+			Message: "Invalid id parameter!",
+			Data:    nil,
+		})
+		return
+	}
+
+	userId, exist := ctx.Get("user_id")
+	if !exist {
+		ctx.JSON(http.StatusUnauthorized, dto.ResponseDTO{
+			Success: false,
+			Message: "Unauthorized access please login!",
+			Data:    nil,
+		})
+		return
+	}
+
+	deletedLink, err := l.linkService.DeleteLinkById(linkId, userId.(int))
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			ctx.JSON(http.StatusNotFound, dto.ResponseDTO{
+				Success: false,
+				Message: err.Error(),
+				Data:    nil,
+			})
+			return
+		}
+
+		if strings.Contains(err.Error(), "Forbidden") {
+			ctx.JSON(http.StatusForbidden, dto.ResponseDTO{
+				Success: false,
+				Message: err.Error(),
+				Data:    nil,
+			})
+			return
+		}
+
+		ctx.JSON(http.StatusInternalServerError, dto.ResponseDTO{
+			Success: false,
+			Message: "Internal server error! " + err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto.ResponseDTO{
+		Success: true,
+		Message: "Delete link success!",
+		Data:    deletedLink,
 	})
 }
