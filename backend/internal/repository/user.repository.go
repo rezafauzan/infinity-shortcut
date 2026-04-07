@@ -21,8 +21,8 @@ func NewUserRepository(db *pgxpool.Pool) (*UserRepository, error) {
 }
 
 func (u UserRepository) CreateNewUser(newUser models.User) (models.User, error) {
-	sql := "INSERT INTO users (first_name, last_name, email, password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING id, first_name, last_name, email, password, created_at, updated_at"
-	rows, err := u.db.Query(context.Background(), sql, newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, time.Now(), time.Now())
+	sql := "INSERT INTO users (first_name, last_name, email, password_hash, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, first_name, last_name, email, password_hash, created_at, updated_at"
+	rows, err := u.db.Query(context.Background(), sql, newUser.FirstName, newUser.LastName, newUser.Email, newUser.PasswordHash, time.Now(), time.Now())
 	if err != nil {
 		return models.User{}, errors.New("Failed to create new user! : " + err.Error())
 	}
