@@ -28,7 +28,7 @@ func (l LinkService) CreateNewLink(newLink dto.CreateNewLinkDTO, userId int) (dt
 	modeledNewLink := models.Links{
 		UserId:      userId,
 		OriginalUrl: newLink.OriginalUrl,
-		ShortUrl:    "localhost:8888/api/links/" + slug,
+		ShortUrl:    slug,
 	}
 
 	createdNewLink, err := l.linkRepo.CreateNewLink(modeledNewLink)
@@ -54,6 +54,28 @@ func (l LinkService) GetLinkById(linkId int) (dto.GetLinkResponseDTO, error) {
 	}
 
 	link, err := l.linkRepo.GetLinkById(linkId)
+	if err != nil {
+		return dto.GetLinkResponseDTO{}, err
+	}
+
+	response := dto.GetLinkResponseDTO{
+		Id:          link.Id,
+		UserId:      link.UserId,
+		OriginalUrl: link.OriginalUrl,
+		ShortUrl:    link.ShortUrl,
+		CreatedAt:   link.CreatedAt,
+		UpdatedAt:   link.UpdatedAt,
+	}
+
+	return response, nil
+}
+
+func (l LinkService) GetLinkBySlug(slug string) (dto.GetLinkResponseDTO, error) {
+	if len(slug) != 7 {
+		return dto.GetLinkResponseDTO{}, errors.New("Link invalid!")
+	}
+
+	link, err := l.linkRepo.GetLinkBySlug(slug)
 	if err != nil {
 		return dto.GetLinkResponseDTO{}, err
 	}
