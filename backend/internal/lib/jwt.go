@@ -14,10 +14,9 @@ type CustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(userId int, cartId int) (string, error) {
+func GenerateToken(userId int) (string, error) {
 	claims := CustomClaims{
 		UserId: userId,
-		CartId: cartId,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(15 * time.Minute)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
