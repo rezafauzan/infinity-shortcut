@@ -30,7 +30,7 @@ func NewAuthHandler(userService *services.AuthService) *AuthHandler {
 // @Failure      400 {object} dto.Response
 // @Failure      409 {object} dto.Response
 // @Failure      500 {object} dto.Response
-// @Router       /auth/register [post]
+// @Router       /api/register [post]
 func (u AuthHandler) Register(ctx *gin.Context) {
 	var newUserData dto.RegisterDTO
 	err := ctx.ShouldBind(&newUserData)
