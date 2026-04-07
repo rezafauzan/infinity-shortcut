@@ -40,7 +40,7 @@ func (l LinkHandler) CreateNewLink(ctx *gin.Context) {
 		})
 		return
 	}
-	
+
 	userId, exist := ctx.Get("user_id")
 	if !exist {
 		ctx.JSON(http.StatusUnauthorized, dto.ResponseDTO{
@@ -64,5 +64,42 @@ func (l LinkHandler) CreateNewLink(ctx *gin.Context) {
 		Success: true,
 		Message: "Register success!",
 		Data:    registeredUser,
+	})
+}
+
+// GetAllLinksByUserId godoc
+// @Summary      Get all links by user
+// @Description  Get all links by user id from logged in user
+// @Tags         links
+// @Produce      json
+// @Success      200 {object} dto.ResponseDTO{data=[]dto.GetAllLinksResponseDTO}
+// @Failure      401 {object} dto.ResponseDTO
+// @Failure      500 {object} dto.ResponseDTO
+// @Router       /api/links [get]
+func (l LinkHandler) GetAllLinksByUserId(ctx *gin.Context) {
+	userId, exist := ctx.Get("user_id")
+	if !exist {
+		ctx.JSON(http.StatusUnauthorized, dto.ResponseDTO{
+			Success: false,
+			Message: "Unauthorized access please login!",
+			Data:    nil,
+		})
+		return
+	}
+
+	links, err := l.linkService.GetAllLinksByUserId(userId.(int))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, dto.ResponseDTO{
+			Success: false,
+			Message: "Internal server error!",
+			Data:    nil,
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto.ResponseDTO{
+		Success: true,
+		Message: "Get all links success!",
+		Data:    links,
 	})
 }
