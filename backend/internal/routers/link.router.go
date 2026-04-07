@@ -8,5 +8,6 @@ import (
 )
 
 func NewLinkRouters(apiRouter *gin.RouterGroup, container *di.Container) {
+	apiRouter.GET("links", middleware.AuthMiddleware(), container.LinkHandler.GetAllLinksByUserId)
 	apiRouter.POST("links", middleware.AuthMiddleware(), container.LinkHandler.CreateNewLink)
 }
