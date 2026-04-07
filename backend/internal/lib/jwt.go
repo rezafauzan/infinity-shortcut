@@ -10,7 +10,6 @@ import (
 
 type CustomClaims struct {
 	UserId int `json:"user_id"`
-	CartId int `json:"cart_id"`
 	jwt.RegisteredClaims
 }
 
