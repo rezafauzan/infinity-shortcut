@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"snowfoxinfinity/infinity-shortcut/internal/dto"
 	"snowfoxinfinity/infinity-shortcut/internal/services"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -64,6 +65,45 @@ func (l LinkHandler) CreateNewLink(ctx *gin.Context) {
 		Success: true,
 		Message: "Register success!",
 		Data:    registeredUser,
+	})
+}
+
+// GetAllLinksByUserId godoc
+// @Summary      Get all links by user
+// @Description  Get all links by user id from logged in user
+// @Tags         links
+// @Produce      json
+// @Success      200 {object} dto.ResponseDTO{data=[]dto.GetAllLinksResponseDTO}
+// @Failure      401 {object} dto.ResponseDTO
+// @Failure      500 {object} dto.ResponseDTO
+// @Router       /api/links [get]
+func (l LinkHandler) GetLinkById(ctx *gin.Context) {
+	linkIdParam := ctx.Param("link_id")
+
+	linkId, err := strconv.Atoi(linkIdParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, dto.ResponseDTO{
+			Success: false,
+			Message: "Invalid link id",
+			Data:    nil,
+		})
+		return
+	}
+
+	links, err := l.linkService.GetLinkById(linkId)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, dto.ResponseDTO{
+			Success: false,
+			Message: "Internal server error!",
+			Data:    nil,
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto.ResponseDTO{
+		Success: true,
+		Message: "Get all links success!",
+		Data:    links,
 	})
 }
 
