@@ -1,8 +1,8 @@
 package models
 
 type Links struct {
-	Id          string `json:"id" db:"id"`
-	UserId      string `json:"user_id" db:"user_id"`
+	Id          int `json:"id" db:"id"`
+	UserId      int `json:"user_id" db:"user_id"`
 	OriginalUrl string `json:"original_url" db:"original_url"`
 	ShortUrl    string `json:"short_url" db:"short_url"`
 	CreatedAt   string `json:"created_at" db:"created_at"`
