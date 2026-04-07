@@ -18,8 +18,7 @@ func NewLinkService(linkRepo *repository.LinkRepository) *LinkService {
 	}
 }
 
-func (l LinkService) CreateNewLink(newLink dto.CreateNewLinkDTO) (dto.CreateNewLinkResponseDTO, error) {
-	userId := 1
+func (l LinkService) CreateNewLink(newLink dto.CreateNewLinkDTO, userId int) (dto.CreateNewLinkResponseDTO, error) {
 	if userId < 0 {
 		return dto.CreateNewLinkResponseDTO{}, errors.New("Session invalid please relogin!")
 	}
