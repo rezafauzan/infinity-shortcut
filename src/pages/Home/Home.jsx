@@ -3,6 +3,7 @@ import { AiOutlineLink } from "react-icons/ai";
 import { Link, Outlet } from "react-router-dom";
 import Navbar from "/src/components/Navbar";
 import { useForm } from "react-hook-form";
+import stockPhoto from "/assets/img/value-propotition-stock-photo.png"
 
 const Hero = () => {
     const { register, handleSubmit } = useForm()
@@ -41,7 +42,7 @@ const Hero = () => {
 
 const Features = () => {
     return (
-        <section>
+        <section className="bg-[#F4F4F5]">
             <div className="flex flex-col gap-4 p-4">
                 <div className="section-header">
                     <h2 className="font-bold text-blue-700">
@@ -91,6 +92,36 @@ const Features = () => {
     )
 }
 
+const ValuePropotition = () => {
+    return (
+        <section className="bg-[#FFFFFF]">
+            <div className="flex flex-col md:flex-row gap-4 p-4">
+                <div className="section-header flex-1 flex justify-center items-center">
+                    <div className="rounded w-lg h-lg overflow-hidden">
+                        <img src={stockPhoto} alt="Data Driven Insights Stock Photo" />
+                    </div>
+                </div>
+                <div className="section-body flex-1 flex justify-center items-center">
+                    <div className="flex flex-col justify-center gap-4">
+                        <span className="text-gray-700 text-sm font-bold">Data Driven Insights</span>
+                        <h2 className="font-bold text-xl">Observe your link architecture in real-time.</h2>
+                        <p>
+                            Every click is a data point. Our dashboard provides surgical precision into
+                            where your traffic originates, who is engaging, and how your team
+                            communications are performing across the globe.
+                        </p>
+                        <ul className="flex flex-col justify-center gap-4 list-image-[url('/assets/img/drawable/custom-list-icon.svg')]">
+                            <li className="font-bold">Geographic Distribution Maps</li>
+                            <li className="font-bold">Device & Browser Breakdown</li>
+                            <li className="font-bold">UTM Parameter Tracking</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    )
+}
+
 const HomeLayout = () => {
     return (
         <>
@@ -98,6 +129,7 @@ const HomeLayout = () => {
                 <Navbar />
                 <Hero />
                 <Features />
+                <ValuePropotition />
             </div>
         </>
     )
