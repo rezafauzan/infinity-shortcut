@@ -34,3 +34,17 @@ func (u UserRepository) CreateNewUser(newUser models.User) (models.User, error) 
 
 	return registeredUser, nil
 }
+
+func (u UserRepository) GetUserByEmail(email string) (models.User, error) {
+	sql := `SELECT id, first_name, last_name, email, password_hash, created_at, updated_at FROM users WHERE email = $1`
+	rows, err := u.db.Query(context.Background(), sql, email)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	user, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[models.User])
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
+}
