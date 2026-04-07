@@ -20,8 +20,10 @@ func main() {
 	if err != nil {
 		panic("Container Error : " + err.Error())
 	}
+	
 	apiRouter := router.Group("/api")
 	routers.NewUserRouters(apiRouter, container)
+	routers.NewLinkRouters(apiRouter, container)
 
 	router.Run(fmt.Sprintf("localhost:%s", os.Getenv("PORT")))
 }
