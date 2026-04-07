@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewUserRouters(apiRouter *gin.RouterGroup, container *di.Container) {
+func NewAuthRouters(apiRouter *gin.RouterGroup, container *di.Container) {
 	apiRouter.POST("register", container.AuthHandler.Register)
 	apiRouter.POST("login", container.AuthHandler.Login)
 }
