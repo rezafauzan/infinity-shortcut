@@ -9,6 +9,7 @@ using dependency injection layered application architecture serving RESTful API
 - github.com/jackc/pgx/v5
 - github.com/joho/godotenv
 - github.com/golang-jwt/jwt/v5
+- github.com/matthewhartstonge/argon2
 
 ## How To Run
 - Simply download the source code 
