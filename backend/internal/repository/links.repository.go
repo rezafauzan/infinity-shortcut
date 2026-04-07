@@ -35,6 +35,22 @@ func (u LinkRepository) CreateNewLink(newLink models.Links) (models.Links, error
 	return createdLink, nil
 }
 
+func (u LinkRepository) GetLinkById(linkId int) (models.Links, error) {
+	sql := "SELECT id, user_id, original_url, short_url, created_at, updated_at, deleted_at FROM links WHERE id = $1"
+
+	rows, err := u.db.Query(context.Background(), sql, linkId)
+	if err != nil {
+		return models.Links{}, errors.New("Failed to get links! : " + err.Error())
+	}
+
+	link, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[models.Links])
+	if err != nil {
+		return models.Links{}, errors.New("Links fetched but returning error! : " + err.Error())
+	}
+
+	return link, nil
+}
+
 func (u LinkRepository) GetAllLinksByUserId(userId int) ([]models.Links, error) {
 	sql := "SELECT id, user_id, original_url, short_url, created_at, updated_at, deleted_at FROM links WHERE user_id = $1"
 
