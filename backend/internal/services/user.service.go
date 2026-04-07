@@ -34,23 +34,28 @@ func (u UserService) CreateNewUser(newUser dto.CreateUserDTO) (dto.CreateUserRes
 	if newUser.PasswordConfirm != newUser.Password {
 		return dto.CreateUserResponseDTO{}, errors.New("Password confirmation missmatch !")
 	}
-	
+
 	modeledNewUser := models.User{
-		FirstName: newUser.FirstName,
-		LastName:  newUser.LastName,
-		Email:     newUser.Email,
-		PasswordHash:  newUser.Password,
+		FirstName:    newUser.FirstName,
+		LastName:     newUser.LastName,
+		Email:        newUser.Email,
+		PasswordHash: newUser.Password,
 	}
-	
+
+	_, err := u.userRepo.GetUserByEmail(modeledNewUser.Email)
+	if err == nil {
+		return dto.CreateUserResponseDTO{}, errors.New("Email allready used!")
+	}
+
 	registeredUser, err := u.userRepo.CreateNewUser(modeledNewUser)
 	if err != nil {
 		return dto.CreateUserResponseDTO{}, err
 	}
-	
+
 	response := dto.CreateUserResponseDTO{
 		FirstName: registeredUser.FirstName,
-		LastName: registeredUser.LastName,
-		Email: registeredUser.Email,
+		LastName:  registeredUser.LastName,
+		Email:     registeredUser.Email,
 		CreatedAt: registeredUser.CreatedAt,
 		UpdatedAt: registeredUser.UpdatedAt,
 	}
