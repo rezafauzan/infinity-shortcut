@@ -21,7 +21,7 @@ jobs:
             - name: Fetch Source Code
               uses: actions/checkout@v6
             - name: Build vite react app
-              run: npm install && npm run build
+              run: cd frontend && npm install && npm run build
             - name: "[DOCKER] Setup metadata"
               id: meta
               uses: docker/metadata-action@v5
