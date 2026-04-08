@@ -75,21 +75,21 @@ func (u AuthService) Register(newUser dto.RegisterDTO) (dto.RegisterResponseDTO,
 
 func (a AuthService) Login(req dto.LoginRequestDTO) (dto.LoginResponseDTO, error) {
 	if !strings.Contains(req.Email, "@") {
-		return dto.LoginResponseDTO{}, errors.New("Failed to login! Invalid email format !")
+		return dto.LoginResponseDTO{}, errors.New("Invalid email format !")
 	}
 
 	user, err := a.userRepo.GetUserByEmail(req.Email)
 	if err != nil {
-		return dto.LoginResponseDTO{}, errors.New("Failed to login! Invalid email or password !")
+		return dto.LoginResponseDTO{}, errors.New("Invalid email or password !")
 	}
 
 	matched, err := argon2.VerifyEncoded([]byte(req.Password), []byte(user.PasswordHash))
 	if err != nil {
-		return dto.LoginResponseDTO{}, errors.New("Failed to login! Invalid email or password !")
+		return dto.LoginResponseDTO{}, errors.New("Invalid email or password !")
 	}
 
 	if(!matched){
-		return dto.LoginResponseDTO{}, errors.New("Failed to login! Invalid email or password !")
+		return dto.LoginResponseDTO{}, errors.New("Invalid email or password !")
 	}
 
 	token, err := lib.GenerateToken(user.Id)
