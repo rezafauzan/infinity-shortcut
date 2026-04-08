@@ -15,8 +15,15 @@ const Hero = () => {
     const { setAlert } = useContext(AlertContext)
 
     function cutLink({ link }) {
-        setAlert(['success', "You can use this feature after login ^_^"])
-        navigator("/auth/login")
+        const token = window.localStorage.getItem("token")
+        
+        if (!token) {
+            setAlert(['success', "You can use this feature after login ^_^"])
+            navigator("/auth/login")
+            return
+        }
+
+        navigator("/dashboard")
     }
 
     return (

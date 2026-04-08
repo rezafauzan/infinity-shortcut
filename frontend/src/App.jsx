@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import AuthLayout from "./pages/auth/AuthLayout"
+import DashboardLayout from "./pages/Dashboard/DashboardLayout"
 import Login from "./pages/auth/Login"
 import Register from "./pages/auth/Register"
 import Home from "./pages/Home/Home"
@@ -14,7 +15,7 @@ function App() {
   function modalRemove() {
     setAlert([])
   }
-  
+
   const router = createBrowserRouter(
     [
       {
@@ -34,6 +35,10 @@ function App() {
             element: <Register />
           }
         ]
+      },
+      {
+        path: '/dashboard',
+        element: <DashboardLayout />
       }
     ]
   )
