@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"snowfoxinfinity/infinity-shortcut/internal/di"
+	"snowfoxinfinity/infinity-shortcut/internal/middleware"
 	"snowfoxinfinity/infinity-shortcut/internal/routers"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,8 @@ func main() {
 	if err != nil {
 		panic("Container Error : " + err.Error())
 	}
+
+	router.Use(middleware.CORSMiddleware())
 	
 	apiRouter := router.Group("/api")
 	routers.NewAuthRouters(apiRouter, container)
