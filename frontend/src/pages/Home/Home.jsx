@@ -147,22 +147,25 @@ const HomeLayout = () => {
     useEffect(() => {
         const validateToken = async () => {
             const token = window.localStorage.getItem("token")
+            if (token) {
+                try {
+                    const req = await http("validate-token", null, { token })
 
-            try {
-                const req = await http("validate-token", null, { token })
+                    const result = await req.json()
 
-                const result = await req.json()
-
-                if (!result.success) {
+                    if (!result.success) {
+                        window.localStorage.removeItem("token")
+                        throw new Error(result.message)
+                    }
+                    setUser(result.data)
+                } catch (error) {
                     window.localStorage.removeItem("token")
-                    throw new Error(result.message)
+                    setAlert(["fail", "Session expired please relogin!" + error])
+                    navigate("/auth/login")
+                } finally {
+                    setLoading(false)
                 }
-                setUser(result.data)
-            } catch (error) {
-                window.localStorage.removeItem("token")
-                setAlert(["fail", "Session expired please relogin!" + error])
-                navigate("/auth/login")
-            } finally {
+            }else{
                 setLoading(false)
             }
         }
@@ -181,6 +184,7 @@ const HomeLayout = () => {
             </div>
         )
     }
+    
     return (
         <>
             <div className="wrapper">
