@@ -24,16 +24,16 @@ const Login = () => {
             const token = window.localStorage.getItem("token")
 
             if (!token) return
-            
+
             try {
                 const res = await http("validate-token", null, { token })
-                
+
                 const result = await res.json()
                 if (!result.success) {
                     window.localStorage.removeItem("token")
                     throw new Error(result.message)
                 }
-                
+
                 navigator("/")
             } catch (error) {
                 window.localStorage.removeItem("token")
@@ -60,7 +60,9 @@ const Login = () => {
     }
     return (
         <>
-            <span className="text-xl font-bold">Infinity Shortcut</span>
+            <Link to="/">
+                <span className="text-xl font-bold">Infinity Shortcut</span>
+            </Link>
 
             <div className="flex flex-col justify-center gap-4 p-4 rounded shadow border border-black/10 min-w-lg">
                 <div className="flex flex-col justify-center">
