@@ -1,20 +1,42 @@
 import { AiOutlineGoogle } from "react-icons/ai";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 import { AiOutlineArrowRight } from "react-icons/ai";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup"
+import http from "/src/lib/http.js"
+import AlertContext from "/src/components/context/AlertContext"
 
 const Login = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const { register, handleSubmit } = useForm()
-    function login({ email, password }) {
-        console.log(email, password)
+    const { setAlert } = useContext(AlertContext)
+    const navigator = useNavigate()
+    const validator = yup.object({
+        email: yup.string("Email tidak valid").required("Email harus diisi").email("Email tidak valid"),
+    })
+
+    const { register, handleSubmit, formState } = useForm({ resolver: yupResolver(validator) })
+
+    async function login({ email, password }) {
+        try {
+            const req = await http("login", { email, password }, { method: "POST" })
+            const result = await req.json()
+            if (!result.success) {
+                throw new Error(result.message)
+            }
+            setAlert(['success', result.message])
+            window.localStorage.setItem("token", result.data.token)
+            navigator("/")
+        } catch (error) {
+            setAlert(['fail', error.message])
+        }
     }
     return (
         <>
             <span className="text-xl font-bold">Infinity Shortcut</span>
-            
+
             <div className="flex flex-col justify-center gap-4 p-4 rounded shadow border border-black/10 min-w-lg">
                 <div className="flex flex-col justify-center">
                     <span className="font-bold text-lg">Welcome Back</span>
@@ -26,6 +48,7 @@ const Login = () => {
                         <label className="flex items-center gap-4 p-4 border rounded border-black/40">
                             <input type="email" {...register("email")} id="email" placeholder="name@snowfoxinfinity.com" className="flex-1" />
                         </label>
+                        {formState.errors.email && (<span className="bg-red-400 p-4 rounded border border-red-700 text-red-700">{formState.errors.email.message}</span>)}
                         <div className="flex justify-between items-center gap-4">
                             <label htmlFor="password">Password</label>
                             <Link to="#" className="text-blue-700 hover:text-blue-900">Forgot password?</Link>
