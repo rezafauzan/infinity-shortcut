@@ -48,3 +48,19 @@ func (u UserRepository) GetUserByEmail(email string) (models.User, error) {
 	}
 	return user, nil
 }
+
+func (u UserRepository) GetUserById(id int) (models.User, error) {
+	sql := `SELECT id, first_name, last_name, email, password_hash, created_at, updated_at FROM users WHERE id = $1`
+
+	rows, err := u.db.Query(context.Background(), sql, id)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	user, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[models.User])
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
+}

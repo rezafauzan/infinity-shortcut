@@ -105,3 +105,40 @@ func (u AuthHandler) Login(ctx *gin.Context) {
 		Data:    result,
 	})
 }
+
+// GetUserById godoc
+// @Summary      Get user by id
+// @Description  Get user detail from logged in user
+// @Tags         user
+// @Produce      json
+// @Success      200 {object} dto.ResponseDTO{data=dto.GetUserResponseDTO}
+// @Failure      401 {object} dto.ResponseDTO
+// @Failure      500 {object} dto.ResponseDTO
+// @Router       /api/user [get]
+func (a AuthHandler) GetUserById(ctx *gin.Context) {
+	userId, exist := ctx.Get("user_id")
+	if !exist {
+		ctx.JSON(http.StatusUnauthorized, dto.ResponseDTO{
+			Success: false,
+			Message: "Unauthorized access please login!",
+			Data:    nil,
+		})
+		return
+	}
+
+	user, err := a.authService.GetUserById(userId.(int))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, dto.ResponseDTO{
+			Success: false,
+			Message: "Internal server error!",
+			Data:    nil,
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto.ResponseDTO{
+		Success: true,
+		Message: "Get user success!",
+		Data:    user,
+	})
+}

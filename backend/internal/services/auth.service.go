@@ -88,7 +88,7 @@ func (a AuthService) Login(req dto.LoginRequestDTO) (dto.LoginResponseDTO, error
 		return dto.LoginResponseDTO{}, errors.New("Invalid email or password !")
 	}
 
-	if(!matched){
+	if !matched {
 		return dto.LoginResponseDTO{}, errors.New("Invalid email or password !")
 	}
 
@@ -99,5 +99,21 @@ func (a AuthService) Login(req dto.LoginRequestDTO) (dto.LoginResponseDTO, error
 
 	return dto.LoginResponseDTO{
 		Token: token,
+	}, nil
+}
+
+func (a AuthService) GetUserById(id int) (dto.GetUserResponseDTO, error) {
+	user, err := a.userRepo.GetUserById(id)
+	if err != nil {
+		return dto.GetUserResponseDTO{}, errors.New("User not found !")
+	}
+
+	return dto.GetUserResponseDTO{
+		Id:        user.Id,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
 	}, nil
 }
