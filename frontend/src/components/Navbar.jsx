@@ -1,5 +1,6 @@
+import { AiOutlinePlus } from "react-icons/ai";
 import { useContext, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import UserContext from "./context/UserContext"
 import { FiLogOut } from "react-icons/fi"
 import { AiOutlineUser } from "react-icons/ai"
@@ -9,6 +10,7 @@ const Navbar = () => {
     const { user, setUser } = useContext(UserContext)
     const [userDropdown, setUserDropdown] = useState(false)
     const { setAlert } = useContext(AlertContext)
+    const navigate = useNavigate()
 
     function toggleDropdown(setter, getter) {
         setter(!getter)
@@ -18,6 +20,7 @@ const Navbar = () => {
         window.localStorage.removeItem("token")
         setUser(null)
         setAlert(["success", "Anda berhasil logout !"])
+        navigate("/")
     }
 
     return (
@@ -39,6 +42,7 @@ const Navbar = () => {
                         <div className="text-white hidden md:block">
                             <div className="flex justify-between items-center gap-4">
                                 <div className="flex justify-center items-center gap-4 text-black/40 hover:text-black cursor-pointer" onClick={() => { toggleDropdown(setUserDropdown, userDropdown) }}>
+                                    <Link to="/dashboard/new-link" className="bg-blue-700 hover:bg-blue-900 text-white h-10 px-4 flex justify-center items-center gap-4 border border-black/10 rounded shadow cursor-pointer">Create new link <AiOutlinePlus /></Link>
                                     <div className="rounded-full w-10 h-10 overflow-hidden">
                                         <img src={"https://i.pravatar.cc/1000?img=54"} alt={user.first_name} />
                                     </div>
