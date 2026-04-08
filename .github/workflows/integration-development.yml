@@ -20,8 +20,6 @@ jobs:
               run: node -v
             - name: Fetch Source Code
               uses: actions/checkout@v6
-            - name: Build vite react app
-              run: cd frontend && npm install && npm run build
             - name: "[DOCKER] Setup metadata"
               id: meta
               uses: docker/metadata-action@v5
@@ -45,6 +43,7 @@ jobs:
                   push: true
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}
+                  build-args: VITE_BASE_URL=https://68.183.226.223:20004
             - name: "[SERVER] pull image from ghcr.io"
               uses: appleboy/ssh-action@v1
               with:
