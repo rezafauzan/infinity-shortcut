@@ -1,4 +1,4 @@
-export const BASE_URL = import.meta.env.VITE_BASE_URL
+export const BASE_URL = "http://68.183.226.223:20005/"
 
 function http(url, body, opts = {}) {
     const headers = {}
