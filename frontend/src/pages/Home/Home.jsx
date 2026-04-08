@@ -3,14 +3,22 @@ import { AiOutlineLink } from "react-icons/ai";
 import { Link, Outlet } from "react-router-dom";
 import Navbar from "/src/components/Navbar";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom"
+import { useContext } from "react"
 import stockPhoto from "/assets/img/value-propotition-stock-photo.png"
 import Footer from "../../components/Footer";
+import AlertContext from "/src/components/context/AlertContext"
 
 const Hero = () => {
     const { register, handleSubmit } = useForm()
+    const navigator = useNavigate()
+    const { setAlert } = useContext(AlertContext)
+
     function cutLink({ link }) {
-        console.log(link)
+        setAlert(['success', "You can use this feature after login ^_^"])
+        navigator("/auth/login")
     }
+
     return (
         <section>
             <div className="flex flex-col justify-center items-center gap-4 p-4 h-128 md:h-screen md:max-h-192">
