@@ -1,13 +1,15 @@
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { AiOutlineLink } from "react-icons/ai";
-import { Link, Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Navbar from "/src/components/Navbar";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom"
-import { useContext } from "react"
+import { useContext, useState, useEffect } from "react"
 import stockPhoto from "/assets/img/value-propotition-stock-photo.png"
 import Footer from "../../components/Footer";
 import AlertContext from "/src/components/context/AlertContext"
+import UserContext from "/src/components/context/UserContext"
+import http from "../../lib/http"
 
 const Hero = () => {
     const { register, handleSubmit } = useForm()
@@ -16,7 +18,7 @@ const Hero = () => {
 
     function cutLink({ link }) {
         const token = window.localStorage.getItem("token")
-        
+
         if (!token) {
             setAlert(['success', "You can use this feature after login ^_^"])
             navigator("/auth/login")
@@ -139,10 +141,52 @@ const ValuePropotition = () => {
 }
 
 const HomeLayout = () => {
+    const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const { setAlert } = useContext(AlertContext)
+    useEffect(() => {
+        const validateToken = async () => {
+            const token = window.localStorage.getItem("token")
+
+            try {
+                const req = await http("validate-token", null, { token })
+
+                const result = await req.json()
+
+                if (!result.success) {
+                    window.localStorage.removeItem("token")
+                    throw new Error(result.message)
+                }
+                setUser(result.data)
+            } catch (error) {
+                window.localStorage.removeItem("token")
+                setAlert(["fail", "Session expired please relogin!" + error])
+                navigate("/auth/login")
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        validateToken()
+    }, [])
+
+    if (loading) {
+        return (
+            <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/40 backdrop-blur-lg flex justify-center items-center z-10">
+                <div className="bg-green-400 text-green-700 w-[50%] h-[50%] flex items-center justify-center relative rounded">
+                    <span className="text-green-700 p-4 font-bold">
+                        Loading...
+                    </span>
+                </div>
+            </div>
+        )
+    }
     return (
         <>
             <div className="wrapper">
-                <Navbar />
+                <UserContext value={{ user, setUser }}>
+                    <Navbar />
+                </UserContext>
                 <Hero />
                 <Features />
                 <ValuePropotition />
