@@ -7,6 +7,8 @@ import Home from "./pages/Home/Home"
 import AlertContext from "/src/components/context/AlertContext"
 import { useRef, useState } from "react"
 import { AiOutlineCloseCircle } from "react-icons/ai"
+import Dashboard from "./pages/Dashboard/Dashboard"
+import CreateLink from "./pages/Dashboard/CreateLink"
 
 function App() {
   const [alert, setAlert] = useState([])
@@ -38,7 +40,17 @@ function App() {
       },
       {
         path: '/dashboard',
-        element: <DashboardLayout />
+        element: <DashboardLayout />,
+        children: [
+          {
+            path: '',
+            element: <Dashboard />
+          },
+          {
+            path: 'new-link',
+            element: <CreateLink />
+          }
+        ]
       }
     ]
   )
