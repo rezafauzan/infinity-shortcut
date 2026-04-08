@@ -1,0 +1,1 @@
+ALTER TABLE links ALTER COLUMN original_url TYPE VARCHAR(4096);
