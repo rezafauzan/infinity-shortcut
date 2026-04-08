@@ -8,7 +8,7 @@ const Navbar = () => {
                     <Link to="/" className="font-bold">Infinity Shortcut</Link>
                 </div>
                 <ul className="hidden md:flex justify-evenly items-center gap-4">
-                    <li><Link to="/" className="text-gray-700 hover:text-gray-900">Dashboard</Link></li>
+                    <li><Link to="/dashboard" className="text-gray-700 hover:text-gray-900">Dashboard</Link></li>
                     <li><Link to="/" className="text-gray-700 hover:text-gray-900">Analytics</Link></li>
                     <li><Link to="/" className="text-gray-700 hover:text-gray-900">Links</Link></li>
                 </ul>
