@@ -28,5 +28,5 @@ func main() {
 	routers.NewAuthRouters(apiRouter, container)
 	routers.NewLinkRouters(apiRouter, container)
 
-	router.Run(fmt.Sprintf("localhost:%s", os.Getenv("PORT")))
+	router.Run(fmt.Sprintf(":%s", os.Getenv("PORT")))
 }
