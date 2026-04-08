@@ -54,5 +54,5 @@ jobs:
                   port: ${{ secrets.PORT }}
                   script: |
                       cd server-MyShortcut
-                      docker compose pull frontend-infinity-shortcut-app
-                      docker compose up frontend-infinity-shortcut-app -d
+                      docker compose pull frontend
+                      docker compose up frontend -d

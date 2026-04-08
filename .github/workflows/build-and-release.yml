@@ -48,4 +48,4 @@ jobs:
                       cd server-MyShortcut
                       docker compose pull
                       docker run --rm --network=server-myshortcut_webapps migrate/migrate:latest -source github://rezafauzan:${{ secrets.GITHUB_TOKEN }}@rezafauzan/infinity-shortcut/backend/migrations -database postgresql://postgres:Test1224@pg:5432/postgres?sslmode=disable up
-                      docker compose up backend-infinity-shortcut-app -d
+                      docker compose up backend -d
