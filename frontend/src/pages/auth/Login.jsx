@@ -2,7 +2,7 @@ import { AiOutlineGoogle } from "react-icons/ai";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup"
@@ -18,6 +18,31 @@ const Login = () => {
     })
 
     const { register, handleSubmit, formState } = useForm({ resolver: yupResolver(validator) })
+
+    useEffect(() => {
+        const validateToken = async () => {
+            const token = window.localStorage.getItem("token")
+
+            if (!token) return
+            
+            try {
+                const res = await http("validate-token", null, { token })
+                
+                const result = await res.json()
+                if (!result.success) {
+                    window.localStorage.removeItem("token")
+                    throw new Error(result.message)
+                }
+                
+                navigator("/")
+            } catch (error) {
+                window.localStorage.removeItem("token")
+                setAlert(["fail", error.message])
+            }
+        }
+
+        validateToken()
+    }, [])
 
     async function login({ email, password }) {
         try {
