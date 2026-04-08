@@ -1,4 +1,4 @@
-export const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8888"
+export const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8888/api/"
 
 function http(url, body, opts = {}) {
     const headers = {}
