@@ -92,9 +92,30 @@ func (l LinkService) GetLinkBySlug(slug string) (dto.GetLinkResponseDTO, error) 
 	return response, nil
 }
 
-func (l LinkService) GetAllLinksByUserId(userId int) ([]dto.GetLinkResponseDTO, error) {
+func (l LinkService) GetAllLinksByUserId(userId int, url string) ([]dto.GetLinkResponseDTO, error) {
 	if userId < 0 {
 		return []dto.GetLinkResponseDTO{}, errors.New("Session invalid please relogin!")
+	}
+
+	if url != "" {
+		links, err := l.linkRepo.GetLinkByOriginalOrSlug(userId, url)
+		if err != nil {
+			return []dto.GetLinkResponseDTO{}, err
+		}
+		var response []dto.GetLinkResponseDTO
+
+		for _, link := range links {
+			response = append(response, dto.GetLinkResponseDTO{
+				Id:          link.Id,
+				UserId:      link.UserId,
+				OriginalUrl: link.OriginalUrl,
+				ShortUrl:    link.ShortUrl,
+				CreatedAt:   link.CreatedAt,
+				UpdatedAt:   link.UpdatedAt,
+			})
+		}
+
+		return response, nil
 	}
 
 	links, err := l.linkRepo.GetAllLinksByUserId(userId)
@@ -116,7 +137,6 @@ func (l LinkService) GetAllLinksByUserId(userId int) ([]dto.GetLinkResponseDTO, 
 	}
 
 	return response, nil
-
 }
 
 func (l LinkService) DeleteLinkById(id int, userId int) (dto.DeleteLinkResponseDTO, error) {
