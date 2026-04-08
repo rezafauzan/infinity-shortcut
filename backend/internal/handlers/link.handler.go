@@ -120,7 +120,7 @@ func (l LinkHandler) GetLinkById(ctx *gin.Context) {
 // @Router       /api/links/{slug} [get]
 func (l LinkHandler) GetLinkBySlug(ctx *gin.Context) {
 	slugParam := ctx.Param("slug")
-	links, err := l.linkService.GetLinkBySlug(slugParam)
+	link, err := l.linkService.GetLinkBySlug(slugParam)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, dto.ResponseDTO{
 			Success: false,
@@ -130,10 +130,12 @@ func (l LinkHandler) GetLinkBySlug(ctx *gin.Context) {
 		return
 	}
 
+	ctx.Redirect(http.StatusMovedPermanently, link.OriginalUrl)
+
 	ctx.JSON(http.StatusOK, dto.ResponseDTO{
 		Success: true,
-		Message: "Get all links success!",
-		Data:    links,
+		Message: "Get link success!",
+		Data:    link,
 	})
 }
 
@@ -157,7 +159,7 @@ func (l LinkHandler) GetAllLinksByUserId(ctx *gin.Context) {
 		return
 	}
 
-	links, err := l.linkService.GetAllLinksByUserId(userId.(int))
+	links, err := l.linkService.GetAllLinksByUserId(userId.(int), "")
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, dto.ResponseDTO{
 			Success: false,
@@ -170,6 +172,45 @@ func (l LinkHandler) GetAllLinksByUserId(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dto.ResponseDTO{
 		Success: true,
 		Message: "Get all links success!",
+		Data:    links,
+	})
+}
+
+func (l LinkHandler) SearchLink(ctx *gin.Context) {
+	userId, exist := ctx.Get("user_id")
+	if !exist {
+		ctx.JSON(http.StatusUnauthorized, dto.ResponseDTO{
+			Success: false,
+			Message: "Unauthorized access please login!",
+			Data:    nil,
+		})
+		return
+	}
+
+	keyword := ctx.Query("search")
+	if keyword == "" {
+		ctx.JSON(http.StatusBadRequest, dto.ResponseDTO{
+			Success: false,
+			Message: "Query parameter 'search' is required!",
+			Data:    nil,
+		})
+		return
+	}
+	
+	links, err := l.linkService.GetAllLinksByUserId(userId.(int), keyword)
+	fmt.Println(links)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, dto.ResponseDTO{
+			Success: false,
+			Message: "Internal server error!",
+			Data:    nil,
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto.ResponseDTO{
+		Success: true,
+		Message: "Search links success!",
 		Data:    links,
 	})
 }
