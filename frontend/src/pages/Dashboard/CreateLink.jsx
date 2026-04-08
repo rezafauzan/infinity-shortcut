@@ -4,7 +4,7 @@ import { HiOutlineEye } from "react-icons/hi"
 import { BsFillLightningChargeFill, BsQrCode } from "react-icons/bs"
 import { IoAnalyticsOutline } from "react-icons/io5"
 import { Link, useNavigate } from "react-router-dom"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import AlertContext from "/src/components/context/AlertContext"
 import http from "../../lib/http"
 
@@ -38,11 +38,56 @@ const CreateLink = () => {
                 throw new Error(result.message)
             }
             setAlert(["success", result.message])
+            navigate("/dashboard")
         } catch (error) {
-            setAlert(["fail", error.message])
+            if (error.message.includes("Invalid or expired token")) {
+                setAlert(["fail", error.message])
+                window.localStorage.removeItem("token")
+                navigate("/login")
+            }
         } finally {
             setLoading(false)
         }
+    }
+
+    useEffect(() => {
+        const validateToken = async () => {
+            const token = window.localStorage.getItem("token")
+
+            if (!token) {
+                navigate("/auth/login")
+            }
+
+            try {
+                const req = await http("validate-token", null, { token })
+
+                const result = await req.json()
+                if (!result.success) {
+                    window.localStorage.removeItem("token")
+                    throw new Error(result.message)
+                }
+            } catch (error) {
+                window.localStorage.removeItem("token")
+                setAlert(["fail", "Session expired please relogin!"])
+                navigate("/auth/login")
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        validateToken()
+    }, [])
+
+    if (loading) {
+        return (
+            <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/40 backdrop-blur-lg flex justify-center items-center z-10">
+                <div className="bg-green-400 text-green-700 w-[50%] h-[50%] flex items-center justify-center relative rounded">
+                    <span className="text-green-700 p-4 font-bold">
+                        Loading...
+                    </span>
+                </div>
+            </div>
+        )
     }
     return (
         <section className="min-h-screen p-6 md:p-12 ">
