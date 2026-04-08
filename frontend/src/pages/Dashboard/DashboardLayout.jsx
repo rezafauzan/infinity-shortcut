@@ -1,103 +1,35 @@
-import { BiBarChartAlt2 } from "react-icons/bi";
-import { BsFillCalendarDateFill } from "react-icons/bs";
-import { AiOutlineLink, AiOutlineSearch, AiOutlineCopy, AiOutlineDelete } from "react-icons/ai"
-import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi"
-import { IoStatsChartOutline } from "react-icons/io5"
-import { LuCalendarDays } from "react-icons/lu"
-import { useForm } from "react-hook-form"
-import { useContext, useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
-import AlertContext from "/src/components/context/AlertContext"
+import Navbar from "../../components/Navbar"
+import Footer from "../../components/Footer"
+import AlertContext from "../../components/context/AlertContext"
+import { useContext, useEffect, useState } from "react"
 import http from "../../lib/http"
+import UserContext from "../../components/context/UserContext"
+
 
 const DashboardLayout = () => {
-    const { register, handleSubmit } = useForm()
-    const navigate = useNavigate()
-    const { setAlert } = useContext(AlertContext)
-    const [userLinks, setUserLinks] = useState([])
+    const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(true)
-
-    function search({ slug }) {
-        console.log(slug)
-    }
-
-    const copyShortLink = async (link) => {
-        try {
-            await navigator.clipboard.writeText(link)
-            setAlert(["success", "Shortcut link copied to clipboard! " + link])
-        } catch (err) {
-            setAlert(["fail", "Shortcut link failed to copy to clipboard! " + err])
-        }
-    }
-
-    const deleteShortLink = async (id) => {
-        const token = window.localStorage.getItem("token")
-
-        if (!token) {
-            navigate("/auth/login")
-        }
-
-        try {
-            const req = await http("links/" + id, null, { method: "DELETE", token })
-
-            const result = await req.json()
-            if (!result.success) {
-                throw new Error(result.message)
-            }
-            setAlert(["success", result.message])
-
-            const reqUserLinks = await http("links", null, { token })
-
-            const resultUserLinks = await reqUserLinks.json()
-            if (!resultUserLinks.success) {
-                window.localStorage.removeItem("token")
-                throw new Error(resultUserLinks.message)
-            }
-
-            setUserLinks(resultUserLinks.data)
-        } catch (error) {
-            if (error.message.includes("Unauthorized access")) {
-                window.localStorage.removeItem("token")
-                setAlert(["fail", "Session expired please relogin!"])
-                navigate("/auth/login")
-                return
-            }
-            setAlert(["fail", error.message])
-        }
-    }
+    const { setAlert } = useContext(AlertContext)
+    const navigate = useNavigate()
 
     useEffect(() => {
         const validateToken = async () => {
             const token = window.localStorage.getItem("token")
 
-            if (!token) {
-                navigate("/auth/login")
-            }
-
             try {
                 const req = await http("validate-token", null, { token })
 
                 const result = await req.json()
+
                 if (!result.success) {
                     window.localStorage.removeItem("token")
                     throw new Error(result.message)
                 }
-
-                const reqUserLinks = await http("links", null, { token })
-
-                const resultUserLinks = await reqUserLinks.json()
-                if (!resultUserLinks.success) {
-                    window.localStorage.removeItem("token")
-                    throw new Error(resultUserLinks.message)
-                }
-
-                if (resultUserLinks.data != null) {
-                    setUserLinks(resultUserLinks.data)
-                }
-
+                setUser(result.data)
             } catch (error) {
                 window.localStorage.removeItem("token")
-                setAlert(["fail", "Session expired please relogin!"])
+                setAlert(["fail", "Session expired please relogin! " + error])
                 navigate("/auth/login")
             } finally {
                 setLoading(false)
@@ -120,11 +52,13 @@ const DashboardLayout = () => {
     }
 
     return (
-        <section className="bg-[#F4F4F5] min-h-screen p-6 md:p-12">
-            <div className="max-w-5xl mx-auto flex flex-col gap-8">
-                <Outlet />
-            </div>
-        </section>
+        <>
+            <UserContext value={{ user, setUser }}>
+                <Navbar />
+            </UserContext>
+            <Outlet />
+            <Footer />
+        </>
     )
 }
 
