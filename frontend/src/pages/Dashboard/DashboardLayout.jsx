@@ -30,6 +30,42 @@ const DashboardLayout = () => {
         }
     }
 
+    const deleteShortLink = async (id) => {
+        const token = window.localStorage.getItem("token")
+
+        if (!token) {
+            navigate("/auth/login")
+        }
+
+        try {
+            const req = await http("links/" + id, null, { method: "DELETE", token })
+
+            const result = await req.json()
+            if (!result.success) {
+                throw new Error(result.message)
+            }
+            setAlert(["success", result.message])
+
+            const reqUserLinks = await http("links", null, { token })
+
+            const resultUserLinks = await reqUserLinks.json()
+            if (!result.success) {
+                window.localStorage.removeItem("token")
+                throw new Error(resultUserLinks.message)
+            }
+
+            setUserLinks(resultUserLinks.data)
+        } catch (error) {
+            if (error.message.includes("Unauthorized access")) {
+                window.localStorage.removeItem("token")
+                setAlert(["fail", "Session expired please relogin!"])
+                navigate("/auth/login")
+                return
+            }
+            setAlert(["fail", error.message])
+        }
+    }
+
     useEffect(() => {
         const validateToken = async () => {
             const token = window.localStorage.getItem("token")
@@ -91,7 +127,7 @@ const DashboardLayout = () => {
                         </div>
                         <div className="text-right">
                             <span className="text-gray-400 font-semibold uppercase text-sm tracking-wider">Total Active</span>
-                            <div className="text-4xl font-bold text-blue-700">{userLinks.length.toLocaleString("id-ID")}</div>
+                            <div className="text-4xl font-bold text-blue-700">{(userLinks && userLinks.length.toLocaleString("id-ID"))}</div>
                         </div>
                     </div>
                 </div>
@@ -109,7 +145,7 @@ const DashboardLayout = () => {
 
                 <div className="flex flex-col gap-4">
                     {
-                        userLinks.map((link) => (
+                        userLinks && userLinks.map((link) => (
                             <div key={link.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-blue-300 transition-all group">
                                 <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-2">
@@ -136,7 +172,7 @@ const DashboardLayout = () => {
                                         <button className="p-3 bg-slate-50 text-blue-700 rounded-xl hover:bg-blue-700 hover:text-white transition-all shadow-sm" onClick={() => { copyShortLink(`http://localhost:8888/api/links/${link.short_url}`) }}>
                                             <AiOutlineCopy className="text-xl" />
                                         </button>
-                                        <button className="p-3 bg-slate-50 text-gray-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shadow-sm">
+                                        <button className="p-3 bg-slate-50 text-gray-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shadow-sm" onClick={() => { deleteShortLink(`${link.id}`) }}>
                                             <AiOutlineDelete className="text-xl" />
                                         </button>
                                     </div>

@@ -44,7 +44,7 @@ func (l LinkHandler) CreateNewLink(ctx *gin.Context) {
 		return
 	}
 
-	userId, exist := ctx.Get("user_id")
+	linkId, exist := ctx.Get("user_id")
 	if !exist {
 		ctx.JSON(http.StatusUnauthorized, dto.ResponseDTO{
 			Success: false,
@@ -54,7 +54,7 @@ func (l LinkHandler) CreateNewLink(ctx *gin.Context) {
 		return
 	}
 
-	registeredUser, err := l.linkService.CreateNewLink(newLinkData, userId.(int))
+	createdLink, err := l.linkService.CreateNewLink(newLinkData, linkId.(int))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, dto.ResponseDTO{
 			Success: false,
@@ -65,8 +65,8 @@ func (l LinkHandler) CreateNewLink(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusCreated, dto.ResponseDTO{
 		Success: true,
-		Message: "Register success!",
-		Data:    registeredUser,
+		Message: "Create new link success!",
+		Data:    createdLink,
 	})
 }
 
