@@ -7,10 +7,12 @@ import (
 	"snowfoxinfinity/infinity-shortcut/internal/services"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/redis/go-redis/v9"
 )
 
 type Container struct {
 	db          *pgxpool.Pool
+	rdb         *redis.Client
 	AuthHandler *handlers.AuthHandler
 	LinkHandler *handlers.LinkHandler
 }
@@ -21,12 +23,14 @@ func NewContainer() (*Container, error) {
 		return nil, err
 	}
 
+	rdb := lib.InitRedis()
 	container := &Container{
 		db: db,
+		rdb: rdb,
 	}
 
 	container.initDependencies()
-	
+
 	return container, nil
 }
 
@@ -37,8 +41,8 @@ func (c *Container) initDependencies() error {
 	}
 	userService := services.NewAuthService(userRepo)
 	c.AuthHandler = handlers.NewAuthHandler(userService)
-	
-	linkRepo, err := repository.NewLinkRepository(c.db)
+
+	linkRepo, err := repository.NewLinkRepository(c.db, c.rdb)
 	if err != nil {
 		return err
 	}
