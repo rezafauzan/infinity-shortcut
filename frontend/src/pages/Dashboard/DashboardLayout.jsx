@@ -1,5 +1,5 @@
-import { BiBarChartAlt2 } from "react-icons/bi"; 
-import { BsFillCalendarDateFill } from "react-icons/bs"; 
+import { BiBarChartAlt2 } from "react-icons/bi";
+import { BsFillCalendarDateFill } from "react-icons/bs";
 import { AiOutlineLink, AiOutlineSearch, AiOutlineCopy, AiOutlineDelete } from "react-icons/ai"
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi"
 import { IoStatsChartOutline } from "react-icons/io5"
@@ -12,7 +12,7 @@ import http from "../../lib/http"
 
 const DashboardLayout = () => {
     const { register, handleSubmit } = useForm()
-    const navigator = useNavigate()
+    const navigate = useNavigate()
     const { setAlert } = useContext(AlertContext)
     const [userLinks, setUserLinks] = useState([])
     const [loading, setLoading] = useState(true)
@@ -21,12 +21,21 @@ const DashboardLayout = () => {
         console.log(slug)
     }
 
+    const copyShortLink = async (link) => {
+        try {
+            await navigator.clipboard.writeText(link)
+            setAlert(["success", "Shortcut link copied to clipboard! " + link])
+        } catch (err) {
+            setAlert(["fail", "Shortcut link failed to copy to clipboard! " + err])
+        }
+    }
+
     useEffect(() => {
         const validateToken = async () => {
             const token = window.localStorage.getItem("token")
 
             if (!token) {
-                navigator("/auth/login")
+                navigate("/auth/login")
             }
 
             try {
@@ -47,11 +56,10 @@ const DashboardLayout = () => {
                 }
 
                 setUserLinks(resultUserLinks.data)
-                console.log(resultUserLinks)
             } catch (error) {
                 window.localStorage.removeItem("token")
                 setAlert(["fail", "Session expired please relogin!"])
-                navigator("/auth/login")
+                navigate("/auth/login")
             } finally {
                 setLoading(false)
             }
@@ -107,25 +115,25 @@ const DashboardLayout = () => {
                                     <div className="flex flex-col gap-2">
                                         <div className="flex items-center gap-2 text-blue-700 font-bold text-lg">
                                             <AiOutlineLink className="text-xl" />
-                                            <a href={`https://${link.short_url}`} className="hover:underline">{`http://localhost:8888/api/links/${link.short_url}`}</a>
+                                            <a href={`http://localhost:8888/api/links/${link.short_url}`} className="hover:underline">{`http://localhost:8888/api/links/${link.short_url}`}</a>
                                         </div>
                                         <a href={`https://${link.original_url}`} className="text-gray-400 text-sm truncate max-w-md">
                                             {`https://${link.original_url}`}
                                         </a>
                                         <div className="flex items-center gap-6 mt-2 text-gray-400 font-bold text-xs tracking-widest uppercase">
                                             <div className="flex items-center gap-2">
-                                                <BsFillCalendarDateFill className="text-xl"/>
+                                                <BsFillCalendarDateFill className="text-xl" />
                                                 {link.date}
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <BiBarChartAlt2 className="text-xl"/>
+                                                <BiBarChartAlt2 className="text-xl" />
                                                 {(1000000).toLocaleString("id-ID")} Clicks
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="flex gap-2">
-                                        <button className="p-3 bg-slate-50 text-blue-700 rounded-xl hover:bg-blue-700 hover:text-white transition-all shadow-sm">
+                                        <button className="p-3 bg-slate-50 text-blue-700 rounded-xl hover:bg-blue-700 hover:text-white transition-all shadow-sm" onClick={() => { copyShortLink(`http://localhost:8888/api/links/${link.short_url}`) }}>
                                             <AiOutlineCopy className="text-xl" />
                                         </button>
                                         <button className="p-3 bg-slate-50 text-gray-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shadow-sm">
